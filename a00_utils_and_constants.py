@@ -20,10 +20,11 @@ import platform
 import json
 
 
-if platform.processor() == 'Intel64 Family 6 Model 79 Stepping 1, GenuineIntel':
-    DATASET_PATH = 'E:/Projects_M2/2018_07_Google_Open_Images/input/'
-else:
-    DATASET_PATH = 'D:/Projects/2018_07_Google_Open_Images/input/'
+# if platform.processor() == 'Intel64 Family 6 Model 79 Stepping 1, GenuineIntel':
+#     DATASET_PATH = 'E:/Projects_M2/2018_07_Google_Open_Images/input/'
+# else:
+#     DATASET_PATH = 'D:/Projects/2018_07_Google_Open_Images/input/'
+DATASET_PATH = '/dataset/'
 
 ROOT_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + '/'
 INPUT_PATH = ROOT_PATH + 'input/'
