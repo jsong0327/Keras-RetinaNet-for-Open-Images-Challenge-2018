@@ -44,6 +44,7 @@ def get_retinanet_predictions_for_files(files, out_dir, pretrained_model_path, b
 
     model = models.load_model(pretrained_model_path, backbone_name=backbone)
     print('Proc {} files...'.format(len(files)))
+    print(files)
     for f in files:
         id = os.path.basename(f)[:-4]
 
@@ -64,7 +65,7 @@ def get_retinanet_predictions_for_files(files, out_dir, pretrained_model_path, b
         if backbone == 'resnet152':
             image, scale = resize_image(image, min_side=600, max_side=800)
         elif backbone == 'resnet101':
-            image, scale = resize_image(image, min_side=768, max_side=1024)
+            image, scale = resize_image(image, min_side=1024, max_side=2048)
 
         # Add mirror
         image = np.stack((image, image[:, ::-1, :]), axis=0)
@@ -73,6 +74,8 @@ def get_retinanet_predictions_for_files(files, out_dir, pretrained_model_path, b
         start = time.time()
         print('ID: {} Image shape: {} Scale: {}'.format(id, image.shape, scale))
         boxes, scores, labels = model.predict_on_batch(image)
+        print (scores, labels)
+        assert 1==0
         print('Detections shape: {} {} {}'.format(boxes.shape, scores.shape, labels.shape))
         print("Processing time: {:.2f} sec".format(time.time() - start))
 
@@ -94,6 +97,7 @@ def get_retinanet_predictions_for_files(files, out_dir, pretrained_model_path, b
                 show_image_debug(LEVEL_1_LABELS, draw.astype(np.uint8), boxes_init[:1], scores[:1], labels[:1])
 
         save_in_file_fast((boxes, scores, labels), cache_path)
+    print("End file")
 
 
 def create_csv_for_retinanet(input_dir, out_file, label_arr, skip_box_thr=0.05, intersection_thr=0.55, limit_boxes=300, type='avg'):
@@ -119,8 +123,8 @@ def create_csv_for_retinanet(input_dir, out_file, label_arr, skip_box_thr=0.05, 
             b = merged_boxes[i][2:]
 
             google_name = label_arr[label]
-            if '/' not in google_name:
-                google_name = d2[google_name]
+            # if '/' not in google_name:
+            #     google_name = d2[google_name]
 
             xmin = b[0]
             if xmin < 0:
@@ -163,6 +167,7 @@ def create_csv_for_retinanet(input_dir, out_file, label_arr, skip_box_thr=0.05, 
                 continue
 
             str1 = "{} {:.6f} {:.4f} {:.4f} {:.4f} {:.4f} ".format(google_name, score, xmin, ymin, xmax, ymax)
+            # print(google_name)
             out.write(str1)
         out.write('\n')
 
